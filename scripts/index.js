@@ -23,6 +23,10 @@ function createCard(initialCards){
         event.target.classList.toggle('card__like-button_is-active');
     });
 
+    cloneCard.querySelector('.card__delete-button').addEventListener('click', event => {
+        event.target.closest('.card').remove();
+    });
+
 
     return cloneCard;
 }
