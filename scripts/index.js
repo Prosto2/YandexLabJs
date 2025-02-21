@@ -19,6 +19,11 @@ function createCard(initialCards){
     cardImage.src = initialCards.link;
     cardImage.alt = 'картинка';
 
+    cloneCard.querySelector('.card__like-button').addEventListener('click', event => {
+        event.target.classList.toggle('card__like-button_is-active');
+    });
+
+
     return cloneCard;
 }
 
@@ -47,14 +52,14 @@ function closeModal(popup){
 }
 
 function addPopupCloseEventListener(popup){
-    popup.querySelector('.popup__close').addEventListener('click', event => {
+    popup.querySelector('.popup__close').addEventListener('click', () => {
         closeModal(popup);
     });
 }
 
 addPopupCloseEventListener(profilePopup);
 
-profileEditButton.addEventListener('click', event => {
+profileEditButton.addEventListener('click', () => {
     nameInput.value = profileTitle.textContent;
     jobInput.value = profileDescription.textContent;
 
@@ -79,7 +84,7 @@ const linkInput = cardPopup.querySelector('.popup__input_type_url');
 
 addPopupCloseEventListener(cardPopup);
 
-profileAddButton.addEventListener('click', event => {
+profileAddButton.addEventListener('click', () => {
     openModal(cardPopup);
 });
 
@@ -91,6 +96,7 @@ function handleCardFormSubmit(evt) {
 }
 
 cardFormElement.addEventListener('submit', handleCardFormSubmit);
+
 
 
 // @todo: Функция создания карточки
