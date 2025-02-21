@@ -2,7 +2,14 @@ const profilePopup = document.querySelector('.popup_type_edit');
 const cardPopup = document.querySelector('.popup_type_new-card');
 const imagePopup = document.querySelector('.popup_type_image');
 
+profilePopup.classList.add('popup_is-animated');
+cardPopup.classList.add('popup_is-animated');
+imagePopup.classList.add('popup_is-animated');
+
 // @todo: Темплейт карточки
+
+const popupImage = imagePopup.querySelector('.popup__image');
+const popupCaption = imagePopup.querySelector('.popup__caption');
 
 const placesList = document.querySelector('.places__list');
 
@@ -27,6 +34,11 @@ function createCard(initialCards){
         event.target.closest('.card').remove();
     });
 
+    cardImage.addEventListener('click', event => {
+        popupImage.src = event.target.src;
+        popupCaption.textContent = initialCards.name;
+        openModal(imagePopup);
+    });
 
     return cloneCard;
 }
@@ -62,6 +74,8 @@ function addPopupCloseEventListener(popup){
 }
 
 addPopupCloseEventListener(profilePopup);
+addPopupCloseEventListener(imagePopup);
+addPopupCloseEventListener(cardPopup);
 
 profileEditButton.addEventListener('click', () => {
     nameInput.value = profileTitle.textContent;
@@ -86,8 +100,6 @@ const cardFormElement = cardPopup.querySelector('[name="new-place"]')
 const placeInput = cardPopup.querySelector('.popup__input_type_card-name');
 const linkInput = cardPopup.querySelector('.popup__input_type_url');
 
-addPopupCloseEventListener(cardPopup);
-
 profileAddButton.addEventListener('click', () => {
     openModal(cardPopup);
 });
@@ -96,7 +108,6 @@ function handleCardFormSubmit(evt) {
     evt.preventDefault(); 
 
     placesList.prepend(createCard({name: placeInput.value, link: linkInput.value}));
-    console.log({name: placeInput.value, link: linkInput.value});
 }
 
 cardFormElement.addEventListener('submit', handleCardFormSubmit);
