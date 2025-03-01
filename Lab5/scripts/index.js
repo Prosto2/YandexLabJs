@@ -102,18 +102,38 @@ profilePopupSetInput(nameInput, jobInput, profileTitle, profileDescription);
 enableValidation();
 
 
+function closeByEsc(evt) {
+    if (evt.key === 'Escape') {
+        const openedPopup = document.querySelector('.popup_is-opened');
+        closeModal(openedPopup);
+    }
+}
+
+let overlayClickHandler;
+
+function popupCloseByOverlay(evt, popup)  {
+    if (evt.currentTarget === evt.target) {
+        closeModal(popup);
+    }
+}
+
+
 function profilePopupSetInput(nameInput, jobInput, profileTitle, profileDescription){
     nameInput.value = profileTitle.textContent;
     jobInput.value = profileDescription.textContent;
 }
 
-
 function openModal(popup){
     popup.classList.add('popup_is-opened');
+    overlayClickHandler = evt => popupCloseByOverlay(evt, popup);
+    popup.addEventListener("click",overlayClickHandler);
+    document.addEventListener('keydown', closeByEsc);
 }
 
 function closeModal(popup){
     popup.classList.remove('popup_is-opened');
+    popup.removeEventListener("click", overlayClickHandler);
+    document.removeEventListener('keydown', closeByEsc);
 }
 
 profileEditButton.addEventListener('click', () => {
