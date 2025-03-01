@@ -62,6 +62,22 @@ const checkInputValidity = (formElement, inputElement) => {
     }
 };
 
+const hasInvalidInput = inputList =>{
+    return inputList.some(inputElement => {
+        return !inputElement.validity.valid;
+    });
+};
+
+const toggleButtonState = (inputList, buttonElement) => {
+    if(hasInvalidInput(inputList)){
+        buttonElement.classList.add('button_inactive');
+        buttonElement.setAttribute('disabled', true);
+    } else {
+        buttonElement.classList.remove('button_inactive');
+        buttonElement.removeAttribute('disabled');
+    }
+}
+
 const setEventListeners = (formElement) => {
     const inputList = Array.from(formElement.querySelectorAll('.popup__input'));
     const buttonElement = formElement.querySelector('.popup__button');
@@ -77,31 +93,19 @@ const setEventListeners = (formElement) => {
 const enableValidation = () => {
     const formList = Array.from(document.querySelectorAll('.popup__form'));
     formList.forEach((formElement) => {
-        // const fieldsetList = Array.from(formElement.querySelectorAll('.popup__input'));
-
         setEventListeners(formElement);
     });
 };
 
-const hasInvalidInput = inputList =>{
-    return inputList.some(inputElement => {
-        return !inputElement.validity.valid;
-    });
-};
 
-const toggleButtonState = (inputList, buttonElement) => {
-    if(hasInvalidInput(inputList)){
-        buttonElement.classList.add('button_inactive');
-    } else {
-        buttonElement.classList.remove('button_inactive');
-    }
-}
-
+profilePopupSetInput(nameInput, jobInput, profileTitle, profileDescription);
 enableValidation();
 
 
-
-
+function profilePopupSetInput(nameInput, jobInput, profileTitle, profileDescription){
+    nameInput.value = profileTitle.textContent;
+    jobInput.value = profileDescription.textContent;
+}
 
 
 function openModal(popup){
@@ -113,8 +117,7 @@ function closeModal(popup){
 }
 
 profileEditButton.addEventListener('click', () => {
-    nameInput.value = profileTitle.textContent;
-    jobInput.value = profileDescription.textContent;
+    profilePopupSetInput(nameInput, jobInput, profileTitle, profileDescription);
 
     openModal(profilePopup);
 });
