@@ -1,4 +1,5 @@
-import {card, popupCaption, popupImage, openModal, imagePopup} from "./index";
+import {card, popupCaption, popupImage, imagePopup} from "./index";
+import {openModal} from "./modal";
 
 export const initialCards = [
     {
