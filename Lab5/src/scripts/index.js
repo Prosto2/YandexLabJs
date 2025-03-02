@@ -1,6 +1,9 @@
+import '../pages/index.css';
+import {createCard, initialCards} from "./cards";
+
 const profilePopup = document.querySelector('.popup_type_edit');
 const cardPopup = document.querySelector('.popup_type_new-card');
-const imagePopup = document.querySelector('.popup_type_image');
+export const imagePopup = document.querySelector('.popup_type_image');
 
 const popupArray = [profilePopup, cardPopup, imagePopup];
 
@@ -15,13 +18,13 @@ popupArray.forEach(evt => {
     addPopupCloseEventListener(evt);
 });
 
-const popupImage = imagePopup.querySelector('.popup__image');
-const popupCaption = imagePopup.querySelector('.popup__caption');
+export const popupImage = imagePopup.querySelector('.popup__image');
+export const popupCaption = imagePopup.querySelector('.popup__caption');
 
 const placesList = document.querySelector('.places__list');
 
 const cardTemplate = document.querySelector('#card-template').content;
-const card = cardTemplate.querySelector('.card');
+export const card = cardTemplate.querySelector('.card');
 
 initialCards.forEach(function(card){
     placesList.append(createCard(card));
@@ -123,10 +126,10 @@ function profilePopupSetInput(nameInput, jobInput, profileTitle, profileDescript
     jobInput.value = profileDescription.textContent;
 }
 
-function openModal(popup){
+export function openModal(popup){
     popup.classList.add('popup_is-opened');
     overlayClickHandler = evt => popupCloseByOverlay(evt, popup);
-    popup.addEventListener("click",overlayClickHandler);
+    popup.addEventListener("mousedown",overlayClickHandler);
     document.addEventListener('keydown', closeByEsc);
 }
 
@@ -143,7 +146,7 @@ profileEditButton.addEventListener('click', () => {
 });
 
 function handleProfileFormSubmit(evt) {
-    evt.preventDefault(); 
+    evt.preventDefault();
 
     profileTitle.textContent = nameInput.value;
     profileDescription.textContent = jobInput.value;
@@ -151,7 +154,7 @@ function handleProfileFormSubmit(evt) {
     closeModal(profilePopup);
 }
 
-profileFormElement.addEventListener('submit', handleProfileFormSubmit); 
+profileFormElement.addEventListener('submit', handleProfileFormSubmit);
 
 
 const profileAddButton = document.querySelector('.profile__add-button');
@@ -165,7 +168,7 @@ profileAddButton.addEventListener('click', () => {
 });
 
 function handleCardFormSubmit(evt) {
-    evt.preventDefault(); 
+    evt.preventDefault();
 
     placesList.prepend(createCard({name: placeInput.value, link: linkInput.value}));
 

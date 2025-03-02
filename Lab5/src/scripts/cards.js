@@ -1,4 +1,6 @@
-const initialCards = [
+import {card, popupCaption, popupImage, openModal, imagePopup} from "./index";
+
+export const initialCards = [
     {
       name: "Архыз",
       link: "https://pictures.s3.yandex.net/frontend-developer/cards-compressed/arkhyz.jpg",
@@ -25,7 +27,7 @@ const initialCards = [
     }
 ];
 
-function createCard(initialCards){
+export function createCard(initialCards){
     const cloneCard = card.cloneNode(true);
 
     const cardTitle = cloneCard.querySelector('.card__title');
