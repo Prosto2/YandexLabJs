@@ -6,7 +6,6 @@ import {enableValidation} from "./validate";
 const profilePopup = document.querySelector('.popup_type_edit');
 const cardPopup = document.querySelector('.popup_type_new-card');
 
-
 const profileEditButton = document.querySelector('.profile__edit-button');
 
 const profileImage = document.querySelector('.profile__image');
@@ -159,17 +158,20 @@ function handleCardFormSubmit(evt) {
     })
         .then(res => {
             if(res.ok){
-                placesList.prepend(createCard({name: placeInput.value, link: linkInput.value}));
-
-                closeModal(cardPopup);
+                return res.json();
             } else {
                 return Promise.reject(`Ошибка:  ${res.status}`);
             }
         })
+        .then(data => {
+            console.log(data);
+            placesList.prepend(createCard(data));
+
+            closeModal(cardPopup);
+        })
         .catch(err => {
             console.log(err);
         });
-
 
 }
 
