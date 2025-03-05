@@ -54,6 +54,3 @@ export const enableValidation = (validationSettings) => {
         setEventListeners(formElement, validationSettings);
     });
 };
-
-
-// profilePopupSetInput(nameInput, jobInput, profileTitle, profileDescription);

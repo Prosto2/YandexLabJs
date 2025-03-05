@@ -1,5 +1,5 @@
 import '../pages/index.css';
-import {createCard, initialCards, imagePopup} from "./cards";
+import {createCard, imagePopup} from "./cards";
 import {closeModal, openModal} from "./modal";
 import {enableValidation} from "./validate";
 
@@ -25,6 +25,7 @@ const linkInput = cardPopup.querySelector('.popup__input_type_url');
 
 const popupArray = [profilePopup, cardPopup, imagePopup];
 
+
 const validationSettings = {
     formSelector: '.popup__form',
     inputSelector: '.popup__input',
@@ -34,7 +35,35 @@ const validationSettings = {
     errorClass: 'form__input-error_active'
 }
 
+fetch('https://nomoreparties.co/v1/apf-cohort-202/users/me', {
+    headers: {
+        authorization: 'b27f8ef8-b6db-412d-b6ac-dca73d415e99'
+    }
+})
+    .then(res => {
+        if(res.ok) {
+            return  res.json();
+        } else {
+            return Promise.reject(`Ошибка:  ${res.status}`);
+        }
+    })
+    .then((result) => {
+        profileImage.style = `background-image: url('${result.avatar}');`;
+        profileTitle.textContent = result.name;
+        profileDescription.textContent = result.about;
+    })
+    .catch(err => {
+        console.log(err);
+    });
+
+
+function profilePopupSetInput(nameInput, jobInput, profileTitle, profileDescription){
+    nameInput.value = profileTitle.textContent;
+    jobInput.value = profileDescription.textContent;
+}
+
 enableValidation(validationSettings);
+
 
 function addPopupCloseEventListener(popup){
     popup.querySelector('.popup__close').addEventListener('click', () => {
@@ -49,15 +78,28 @@ popupArray.forEach(evt => {
 
 const placesList = document.querySelector('.places__list');
 
+fetch('https://nomoreparties.co/v1/apf-cohort-202/cards', {
+    headers: {
+        authorization: 'b27f8ef8-b6db-412d-b6ac-dca73d415e99'
+    }
+})
+    .then(res => {
+        if(res.ok) {
+            return res.json();
+        } else {
+            return Promise.reject(`Ошибка:  ${res.status}`);
+        }
+    })
+    .then((result) => {
+        result.forEach(function(card){
+            placesList.append(createCard(card));
+        });
+    })
+    .catch(err => {
+        console.log(err);
+    });
 
-initialCards.forEach(function(card){
-    placesList.append(createCard(card));
-});
 
-function profilePopupSetInput(nameInput, jobInput, profileTitle, profileDescription){
-    nameInput.value = profileTitle.textContent;
-    jobInput.value = profileDescription.textContent;
-}
 
 
 profileEditButton.addEventListener('click', () => {
@@ -69,10 +111,30 @@ profileEditButton.addEventListener('click', () => {
 function handleProfileFormSubmit(evt) {
     evt.preventDefault();
 
-    profileTitle.textContent = nameInput.value;
-    profileDescription.textContent = jobInput.value;
+    fetch('https://nomoreparties.co/v1/apf-cohort-202/users/me', {
+        method: 'PATCH',
+        headers: {
+            authorization: 'b27f8ef8-b6db-412d-b6ac-dca73d415e99',
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+            name: nameInput.value,
+            about: jobInput.value
+        })
+    })
+        .then(res => {
+            if(res.ok){
+                profileTitle.textContent = nameInput.value;
+                profileDescription.textContent = jobInput.value;
 
-    closeModal(profilePopup);
+                closeModal(profilePopup);
+            } else {
+                return Promise.reject(`Ошибка:  ${res.status}`);
+            }
+        })
+        .catch(err => {
+            console.log(err);
+        });
 }
 
 profileFormElement.addEventListener('submit', handleProfileFormSubmit);
@@ -84,21 +146,31 @@ profileAddButton.addEventListener('click', () => {
 function handleCardFormSubmit(evt) {
     evt.preventDefault();
 
-    placesList.prepend(createCard({name: placeInput.value, link: linkInput.value}));
+    fetch('https://nomoreparties.co/v1/apf-cohort-202/cards', {
+        method: 'POST',
+        headers: {
+            authorization: 'b27f8ef8-b6db-412d-b6ac-dca73d415e99',
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+            name: placeInput.value,
+            link: linkInput.value
+        })
+    })
+        .then(res => {
+            if(res.ok){
+                placesList.prepend(createCard({name: placeInput.value, link: linkInput.value}));
 
-    closeModal(cardPopup);
+                closeModal(cardPopup);
+            } else {
+                return Promise.reject(`Ошибка:  ${res.status}`);
+            }
+        })
+        .catch(err => {
+            console.log(err);
+        });
+
+
 }
 
 cardFormElement.addEventListener('submit', handleCardFormSubmit);
-
-// fetch('https://nomoreparties.co/v1/apf-cohort-202/users/me ', {
-//     headers: {
-//         authorization: 'b27f8ef8-b6db-412d-b6ac-dca73d415e99'
-//     }
-// })
-//     .then(res => res.json())
-//     .then((result) => {
-//         profileImage.style = `background-image: url('${result.avatar}');`;
-//         profileTitle.textContent = result.name;
-//         profileDescription.textContent = result.about;
-//     });
