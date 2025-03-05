@@ -12,10 +12,12 @@ export function createCard(initialCards){
 
     const cardTitle = cloneCard.querySelector('.card__title');
     const cardImage = cloneCard.querySelector('.card__image');
+    const cardLikes = cloneCard.querySelector('.card__like-count');
 
     cardTitle.textContent = initialCards.name;
     cardImage.src = initialCards.link;
     cardImage.alt = 'картинка';
+    cardLikes.textContent = initialCards.likes.length;
 
     cloneCard.querySelector('.card__like-button').addEventListener('click', event => {
         event.target.classList.toggle('card__like-button_is-active');
