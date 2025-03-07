@@ -33,6 +33,17 @@
       © 2021 Mesto Russia
     </p>
   </footer>
+  <div class="popup popup_type_change-avatar">
+    <div class="popup__content">
+      <button type="button" class="popup__close"></button>
+      <h3 class="popup__title">Обновить аватар</h3>
+      <form class="popup__form" name="change-avatar" novalidate>
+        <input type="text" id="avtar__input" name="avatar" class="popup__input form__input_type_error popup__input_type_name" placeholder="Имя" minlength="2" maxlength="40" required>
+        <span class="avtar__input-error form__input-error_active"></span>
+        <button type="submit" class="button popup__button">Сохранить</button>
+      </form>
+    </div>
+  </div>
   <div class="popup popup_type_edit">
     <div class="popup__content">
       <button type="button" class="popup__close"></button>
