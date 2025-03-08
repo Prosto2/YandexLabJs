@@ -7,6 +7,10 @@ const profilePopup = document.querySelector('.popup_type_edit');
 const cardPopup = document.querySelector('.popup_type_new-card');
 const avatarPopup = document.querySelector('.popup_type_change-avatar');
 
+const profileSubmitButtom = profilePopup.querySelector('.popup__button');
+const cardSubmitButtom = cardPopup.querySelector('.popup__button');
+const avatarSubmitButtom = avatarPopup.querySelector('.popup__button');
+
 const avatarInput = avatarPopup.querySelector('.popup__input_type_avtar');
 const avatarFormElement = avatarPopup.querySelector('[name="change-avatar"]')
 
@@ -43,6 +47,8 @@ profileImage.addEventListener('click', () => {
 function handleAvatarFormSubmit(evt){
     evt.preventDefault();
 
+    avatarSubmitButtom.textContent = 'Сохранение...';
+
     fetch('https://nomoreparties.co/v1/apf-cohort-202/users/me/avatar', {
         method: 'PATCH',
         headers: {
@@ -64,6 +70,9 @@ function handleAvatarFormSubmit(evt){
         })
         .catch(err => {
             console.log(err);
+        })
+        .finally(() => {
+            avatarSubmitButtom.textContent = 'Сохранить';
         });
 }
 
@@ -145,6 +154,8 @@ profileEditButton.addEventListener('click', () => {
 function handleProfileFormSubmit(evt) {
     evt.preventDefault();
 
+    profileSubmitButtom.textContent = 'Сохранение...';
+
     fetch('https://nomoreparties.co/v1/apf-cohort-202/users/me', {
         method: 'PATCH',
         headers: {
@@ -168,6 +179,9 @@ function handleProfileFormSubmit(evt) {
         })
         .catch(err => {
             console.log(err);
+        })
+        .finally(() => {
+            profileSubmitButtom.textContent = 'Сохранить';
         });
 }
 
@@ -179,6 +193,8 @@ profileAddButton.addEventListener('click', () => {
 
 function handleCardFormSubmit(evt) {
     evt.preventDefault();
+
+    cardSubmitButtom.textContent = 'Сохранение...';
 
     fetch('https://nomoreparties.co/v1/apf-cohort-202/cards', {
         method: 'POST',
@@ -206,6 +222,9 @@ function handleCardFormSubmit(evt) {
         })
         .catch(err => {
             console.log(err);
+        })
+        .finally(() => {
+            cardSubmitButtom.textContent = 'Сохранить';
         });
 
 }
