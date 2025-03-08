@@ -5,24 +5,25 @@ import {enableValidation} from "./validate";
 
 const profilePopup = document.querySelector('.popup_type_edit');
 const cardPopup = document.querySelector('.popup_type_new-card');
+const avatarPopup = document.querySelector('.popup_type_change-avatar');
+
+const avatarInput = avatarPopup.querySelector('.popup__input_type_avtar');
+const avatarFormElement = avatarPopup.querySelector('[name="change-avatar"]')
 
 const profileEditButton = document.querySelector('.profile__edit-button');
-
 const profileImage = document.querySelector('.profile__image');
 const profileTitle = document.querySelector('.profile__title');
 const profileDescription = document.querySelector('.profile__description');
-
 const profileFormElement = profilePopup.querySelector('[name="edit-profile"]')
 const nameInput = profilePopup.querySelector('.popup__input_type_name');
 const jobInput = profilePopup.querySelector('.popup__input_type_description');
 
 const profileAddButton = document.querySelector('.profile__add-button');
-
 const cardFormElement = cardPopup.querySelector('[name="new-place"]')
 const placeInput = cardPopup.querySelector('.popup__input_type_card-name');
 const linkInput = cardPopup.querySelector('.popup__input_type_url');
 
-const popupArray = [profilePopup, cardPopup, imagePopup];
+const popupArray = [profilePopup, cardPopup, avatarPopup, imagePopup];
 
 
 const validationSettings = {
@@ -33,6 +34,40 @@ const validationSettings = {
     inputErrorClass: 'popup__input_type_error',
     errorClass: 'form__input-error_active'
 }
+
+profileImage.addEventListener('click', () => {
+    avatarInput.value = profileImage.style.backgroundImage.slice(5, -2);
+    openModal(avatarPopup);
+});
+
+function handleAvatarFormSubmit(evt){
+    evt.preventDefault();
+
+    fetch('https://nomoreparties.co/v1/apf-cohort-202/users/me/avatar', {
+        method: 'PATCH',
+        headers: {
+            authorization: 'b27f8ef8-b6db-412d-b6ac-dca73d415e99',
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+            avatar: avatarInput.value,
+        })
+    })
+        .then(res => {
+            if(res.ok){
+                profileImage.style = `background-image: url('${avatarInput.value}');`;
+
+                closeModal(avatarPopup);
+            } else {
+                return Promise.reject(`Ошибка:  ${res.status}`);
+            }
+        })
+        .catch(err => {
+            console.log(err);
+        });
+}
+
+avatarFormElement.addEventListener('submit', handleAvatarFormSubmit);
 
 fetch('https://nomoreparties.co/v1/apf-cohort-202/users/me', {
     headers: {

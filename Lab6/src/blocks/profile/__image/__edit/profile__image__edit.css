@@ -1,0 +1,10 @@
+.profile__image__edit{
+    background-position: center;
+    background-repeat: no-repeat;
+    height: 100%;
+    width: 100%;
+}
+
+.profile__image__edit:hover{
+    background-image: url("C:\Users\User\Desktop\WEB\Yandex\LabJS\Lab6\src\images\UpdateAvatar.svg");
+}

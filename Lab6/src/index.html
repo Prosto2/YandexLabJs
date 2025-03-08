@@ -15,7 +15,9 @@
   </header>
   <main class="content">
     <section class="profile page__section">
-      <div class="profile__image"></div>
+      <div class="profile__image">
+        <div class="profile__image__edit"></div>
+      </div>
       <div class="profile__info">
         <h1 class="profile__title"></h1>
         <button class="profile__edit-button" type="button"></button>
@@ -34,12 +36,12 @@
     </p>
   </footer>
   <div class="popup popup_type_change-avatar">
-    <div class="popup__content">
+    <div class="popup__content popup__content_type_change-avatar">
       <button type="button" class="popup__close"></button>
       <h3 class="popup__title">Обновить аватар</h3>
       <form class="popup__form" name="change-avatar" novalidate>
-        <input type="text" id="avtar__input" name="avatar" class="popup__input form__input_type_error popup__input_type_name" placeholder="Имя" minlength="2" maxlength="40" required>
-        <span class="avtar__input-error form__input-error_active"></span>
+        <input type="url" id="avatar__input" name="avatar" class="popup__input form__input_type_error popup__input_type_avtar" placeholder="Ссылка на картинку" required>
+        <span class="avatar__input-error form__input-error_active"></span>
         <button type="submit" class="button popup__button">Сохранить</button>
       </form>
     </div>
