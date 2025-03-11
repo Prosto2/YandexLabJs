@@ -1,14 +1,51 @@
-import {closeModal, openModal} from "./modal";
+import {deleteCard, likeAdd, likeDelete} from "./api";
 
 export const imagePopup = document.querySelector('.popup_type_image');
 const cardTemplate = document.querySelector('#card-template').content;
 const card = cardTemplate.querySelector('.card');
 const popupImage = imagePopup.querySelector('.popup__image');
 const popupCaption = imagePopup.querySelector('.popup__caption');
-const userIdToCheck = '796e9005914fa8a4f00ab4ad';
 
+function removeCard(event, initialCards){
+    deleteCard(initialCards)
+        .then(res => {
+            if(res.ok){
+                event.target.closest('.card').remove();
+            } else {
+                return Promise.reject(`Ошибка:  ${res.status}`);
+            }
+        })
+        .catch(err => {
+            console.log(err);
+        });
+}
 
-export function createCard(initialCards){
+function toggleLike(likeButtom, initialCards, cardLikes){
+    likeButtom.addEventListener('click', event => {
+        if(!event.target.classList.contains('card__like-button_is-active')){
+            likeAdd(initialCards)
+                .then(data => {
+                    console.log(data);
+                    cardLikes.textContent = data.likes.length;
+                    event.target.classList.add('card__like-button_is-active');
+                })
+                .catch(err => {
+                    console.log(err);
+                });
+        } else {
+            likeDelete(initialCards)
+                .then(data => {
+                    cardLikes.textContent = data.likes.length;
+                    event.target.classList.remove('card__like-button_is-active');
+                })
+                .catch(err => {
+                    console.log(err);
+                });
+        }
+    });
+}
+
+export function createCard(initialCards, userIdToCheck, openModal){
     const cloneCard = card.cloneNode(true);
 
     const cardTitle = cloneCard.querySelector('.card__title');
@@ -31,72 +68,11 @@ export function createCard(initialCards){
         cardDeleteButton.style.display = 'none';
     } else {
         cardDeleteButton.addEventListener('click', event => {
-            fetch(`https://nomoreparties.co/v1/apf-cohort-202/cards/${initialCards._id}`, {
-                method: 'DELETE',
-                headers: {
-                    authorization: 'b27f8ef8-b6db-412d-b6ac-dca73d415e99',
-                }
-            })
-                .then(res => {
-                    if(res.ok){
-                        event.target.closest('.card').remove();
-                    } else {
-                        return Promise.reject(`Ошибка:  ${res.status}`);
-                    }
-                })
-                .catch(err => {
-                    console.log(err);
-                });
+            removeCard(event, initialCards);
         });
     }
 
-    likeButtom.addEventListener('click', event => {
-        if(!event.target.classList.contains('card__like-button_is-active')){
-            fetch(`https://nomoreparties.co/v1/apf-cohort-202/cards/likes/${initialCards._id}`, {
-                method: 'PUT',
-                headers: {
-                    authorization: 'b27f8ef8-b6db-412d-b6ac-dca73d415e99',
-                }
-            })
-                .then(res => {
-                    if(res.ok){
-                        return res.json();
-                    } else {
-                        return Promise.reject(`Ошибка:  ${res.status}`);
-                    }
-                })
-                .then(data => {
-                    console.log(data);
-                    cardLikes.textContent = data.likes.length;
-                    event.target.classList.add('card__like-button_is-active');
-                })
-                .catch(err => {
-                    console.log(err);
-                });
-        } else {
-            fetch(`https://nomoreparties.co/v1/apf-cohort-202/cards/likes/${initialCards._id}`, {
-                method: 'DELETE',
-                headers: {
-                    authorization: 'b27f8ef8-b6db-412d-b6ac-dca73d415e99',
-                }
-            })
-                .then(res => {
-                    if(res.ok){
-                        return res.json();
-                    } else {
-                        return Promise.reject(`Ошибка:  ${res.status}`);
-                    }
-                })
-                .then(data => {
-                    cardLikes.textContent = data.likes.length;
-                    event.target.classList.remove('card__like-button_is-active');
-                })
-                .catch(err => {
-                    console.log(err);
-                });
-        }
-    });
-
+    toggleLike(likeButtom, initialCards, cardLikes);
 
     cardImage.addEventListener('click', event => {
         popupImage.src = event.target.src;

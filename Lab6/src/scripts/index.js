@@ -2,6 +2,9 @@ import '../pages/index.css';
 import {createCard, imagePopup} from "./cards";
 import {closeModal, openModal} from "./modal";
 import {enableValidation} from "./validate";
+import {updateAvatar, getProfileInfo, getInitialCards, updateProfileInfo, sendCard} from "./api";
+
+const userIdToCheck = '796e9005914fa8a4f00ab4ad';
 
 const profilePopup = document.querySelector('.popup_type_edit');
 const cardPopup = document.querySelector('.popup_type_new-card');
@@ -40,7 +43,6 @@ const validationSettings = {
 }
 
 profileImage.addEventListener('click', () => {
-    avatarInput.value = profileImage.style.backgroundImage.slice(5, -2);
     openModal(avatarPopup);
 });
 
@@ -49,16 +51,7 @@ function handleAvatarFormSubmit(evt){
 
     avatarSubmitButtom.textContent = 'Сохранение...';
 
-    fetch('https://nomoreparties.co/v1/apf-cohort-202/users/me/avatar', {
-        method: 'PATCH',
-        headers: {
-            authorization: 'b27f8ef8-b6db-412d-b6ac-dca73d415e99',
-            'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-            avatar: avatarInput.value,
-        })
-    })
+    updateAvatar(avatarInput.value)
         .then(res => {
             if(res.ok){
                 profileImage.style = `background-image: url('${avatarInput.value}');`;
@@ -78,20 +71,10 @@ function handleAvatarFormSubmit(evt){
 
 avatarFormElement.addEventListener('submit', handleAvatarFormSubmit);
 
-fetch('https://nomoreparties.co/v1/apf-cohort-202/users/me', {
-    headers: {
-        authorization: 'b27f8ef8-b6db-412d-b6ac-dca73d415e99'
-    }
-})
-    .then(res => {
-        if(res.ok) {
-            return  res.json();
-        } else {
-            return Promise.reject(`Ошибка:  ${res.status}`);
-        }
-    })
+getProfileInfo()
     .then((result) => {
         profileImage.style = `background-image: url('${result.avatar}');`;
+        avatarInput.value = result.avatar;
         profileTitle.textContent = result.name;
         profileDescription.textContent = result.about;
     })
@@ -121,21 +104,10 @@ popupArray.forEach(evt => {
 
 const placesList = document.querySelector('.places__list');
 
-fetch('https://nomoreparties.co/v1/apf-cohort-202/cards', {
-    headers: {
-        authorization: 'b27f8ef8-b6db-412d-b6ac-dca73d415e99'
-    }
-})
-    .then(res => {
-        if(res.ok) {
-            return res.json();
-        } else {
-            return Promise.reject(`Ошибка:  ${res.status}`);
-        }
-    })
+getInitialCards()
     .then((result) => {
         result.forEach(function(card){
-            placesList.append(createCard(card));
+            placesList.append(createCard(card, userIdToCheck, openModal));
         });
     })
     .catch(err => {
@@ -143,7 +115,10 @@ fetch('https://nomoreparties.co/v1/apf-cohort-202/cards', {
     });
 
 
-
+Promise.all(getProfileInfo, getInitialCards)
+    .catch(err => {
+        console.log(err);
+    });
 
 profileEditButton.addEventListener('click', () => {
     profilePopupSetInput(nameInput, jobInput, profileTitle, profileDescription);
@@ -156,17 +131,7 @@ function handleProfileFormSubmit(evt) {
 
     profileSubmitButtom.textContent = 'Сохранение...';
 
-    fetch('https://nomoreparties.co/v1/apf-cohort-202/users/me', {
-        method: 'PATCH',
-        headers: {
-            authorization: 'b27f8ef8-b6db-412d-b6ac-dca73d415e99',
-            'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-            name: nameInput.value,
-            about: jobInput.value
-        })
-    })
+    updateProfileInfo(nameInput.value, jobInput.value)
         .then(res => {
             if(res.ok){
                 profileTitle.textContent = nameInput.value;
@@ -196,27 +161,10 @@ function handleCardFormSubmit(evt) {
 
     cardSubmitButtom.textContent = 'Сохранение...';
 
-    fetch('https://nomoreparties.co/v1/apf-cohort-202/cards', {
-        method: 'POST',
-        headers: {
-            authorization: 'b27f8ef8-b6db-412d-b6ac-dca73d415e99',
-            'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-            name: placeInput.value,
-            link: linkInput.value
-        })
-    })
-        .then(res => {
-            if(res.ok){
-                return res.json();
-            } else {
-                return Promise.reject(`Ошибка:  ${res.status}`);
-            }
-        })
+    sendCard(placeInput.value, linkInput.value)
         .then(data => {
             console.log(data);
-            placesList.prepend(createCard(data));
+            placesList.prepend(createCard(data, userIdToCheck, openModal));
 
             closeModal(cardPopup);
         })
